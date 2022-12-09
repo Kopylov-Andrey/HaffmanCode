@@ -34,12 +34,12 @@ namespace HuffmanCode
         {
             Huffman huffman = new Huffman();
 
-            huffman.CompressFile("C:/Users/HP/Desktop/a.txt", "a.txt.huf");
-            huffman.DeCompressFile("a.txt.huf", "a.txt.huf.txt");
+            huffman.CompressFile("C:/Users/HP/Desktop/a.txt", "a.txt.huf"); // открываем файл и сжимаем его
+            huffman.DeCompressFile("a.txt.huf", "a.txt.huf.txt");           // открываем архив и разархивируем его
 
         }
 
-        private void OpenItem_Click(object sender, RoutedEventArgs e)
+        private void OpenItem_Click(object sender, RoutedEventArgs e)       // элеметы интерфейса (в них можно не разбираться)
         {
             
             OpenFileDialog op = new OpenFileDialog();
