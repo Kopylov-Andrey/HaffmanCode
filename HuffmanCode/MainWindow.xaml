@@ -6,32 +6,47 @@
         xmlns:local="clr-namespace:HuffmanCode"
         mc:Ignorable="d"
         Title="Haffman Method" Height="450" Width="800">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0*"/>
-            <ColumnDefinition Width="81*"/>
-            <ColumnDefinition Width="79*"/>
-        </Grid.ColumnDefinitions>
-        <RichTextBox Margin="0,28,13,0" Grid.Column="1" x:Name="richTextBox" TextChanged="richTextBox_TextChanged">
-            <FlowDocument>
-                <Paragraph>
-                    <Run Text=""/>
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
-        <Menu Height="25" VerticalAlignment="Top" Grid.ColumnSpan="2" Grid.Column="1">
-            <MenuItem Header="File">
-                <MenuItem Header="New text file" ></MenuItem>
-                <MenuItem Header="Open text file" Click="OpenItem_Click" ></MenuItem>
-                <MenuItem Header="Save as..."></MenuItem>
-                <Separator />
-                <MenuItem Header="Exit" ></MenuItem>
-            </MenuItem>
-            <MenuItem Header="Edit" ></MenuItem>
-            <MenuItem Header="View" ></MenuItem>
-        </Menu>
-        <Button Grid.Column="2" Content="encode" HorizontalAlignment="Left" Margin="35,82,0,0" VerticalAlignment="Top" Height="30" Width="70"/>
-        <Button Grid.Column="2" Content="decode" HorizontalAlignment="Left" Margin="35,136,0,0" VerticalAlignment="Top" Height="30" Width="70"/>
+    <Grid Margin="0,0,0,209">
+        <Grid Margin="0,0,0,-134">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0*"/>
+                <ColumnDefinition Width="200*"/>
+                <ColumnDefinition Width="90*"/>
+            </Grid.ColumnDefinitions>
+            <RichTextBox Margin="0,28,0,10" Grid.Column="1" x:Name="richTextBox" TextChanged="richTextBox_TextChanged">
+                <FlowDocument>
+                    <Paragraph>
+                        <Run Text=""/>
+                    </Paragraph>
+                </FlowDocument>
+            </RichTextBox>
+            <Menu Height="25" VerticalAlignment="Top" Grid.ColumnSpan="2" Grid.Column="1">
+                <MenuItem Header="File">
+                    <!--<MenuItem Header="New text file" />-->
+                    <MenuItem Header="Open text file" Click="OpenItem_Click" />
+                    <!--<MenuItem Header="Save as..."/>-->
+                    <Separator />
+                    <MenuItem Header="Exit" />
+                </MenuItem>
+                <MenuItem Header="Edit" />
+                <MenuItem Header="View" />
+            </Menu>
+            <Button Grid.Column="2" Content="encode" HorizontalAlignment="Left" Margin="149,79,0,0" VerticalAlignment="Top" Height="20" Width="70" RenderTransformOrigin="0.503,0.742" Click="Btn_Click_Encode"/>
+            <Button Grid.Column="2" Content="decode" HorizontalAlignment="Left" Margin="149,160,0,0" VerticalAlignment="Top" Height="20" Width="70" Click="Btn_Click_Decode"/>
+            <TextBox Grid.Column="2" HorizontalAlignment="Left" Margin="5,79,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="117" Height="20" Name="arhFileName"/>
+            <TextBox Grid.Column="2" HorizontalAlignment="Left" Margin="5,160,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="117" Height="20" Name="deArhFileName"/>
+            <Label Grid.Column="2" Content="Введите название архивированного файла " HorizontalAlignment="Left" Margin="5,100,0,0" VerticalAlignment="Top" FontSize="10"/>
+            <Label Grid.Column="2" Content="Введите название разархивированного файла " HorizontalAlignment="Left" Margin="5,181,0,0" VerticalAlignment="Top" FontSize="10" />
 
+        </Grid>
+        <Grid Margin="0,364,0,-207">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0*"/>
+                <ColumnDefinition Width="200*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="1" Content="File: " HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top"/>
+            <Label Grid.Column="1" Content="" HorizontalAlignment="Left" Margin="40,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.29,-0.052" x:Name="FilePath"/>
+
+        </Grid>
     </Grid>
 </Window>

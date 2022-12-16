@@ -9,6 +9,10 @@ namespace HuffmanCode
 {
     class Huffman
     {
+        const int BITS_PER_BYTE = 256;
+        const int BITS_PER_BYTE_WITH_ZERO = 255;
+        
+
         public void CompressFile (string dataFilename, string archFilename)                 //Метод архивирования файла
         {       
             byte[] data = File.ReadAllBytes(dataFilename);                                  // Считываем все данные
@@ -38,7 +42,7 @@ namespace HuffmanCode
             Node curr = root;                                                               // текущее положение дерева
             List<byte> data = new List<byte>();                                             //массив для данных
             for (int i = startIndex; i < arch.Length; i++)                                  // перебераем со стартового индекса 
-                for (int bit = 1; bit <= 128; bit <<= 1)                                    // перебираем биты (1, 2, 4, 8 и тд)
+                for (int bit = 1; bit <= BITS_PER_BYTE/2; bit <<= 1) //почему 128(то же, что и < 256)   // перебираем биты (1, 2, 4, 8 и тд)
                 {
                     bool zero = (arch[i] & bit) == 0;                                       // проверка на символ бита 
                     if (zero)
@@ -62,12 +66,12 @@ namespace HuffmanCode
                     (arch[2] << 16) |                                                       // (каждый по 8 бит)
                     (arch[3] << 24);
 
-            freqs = new int[256];                                                           // массив частотного словоря
-            for (int i = 0; i < 256; i++)       
+            freqs = new int[BITS_PER_BYTE];                                                           // массив частотного словоря
+            for (int i = 0; i < BITS_PER_BYTE; i++)       
             {
                 freqs[i] = arch[4 + i];                                                     // 4 байта было потрачено на заголовок
             }
-            startIndex = 4 + 256;                                                           // начальный индекс закодированного файла
+            startIndex = 4 + BITS_PER_BYTE;                                                           // начальный индекс закодированного файла
         }
 
         private byte[] CompressByte(byte[] data)                                            // метод сжатия данных
@@ -87,11 +91,11 @@ namespace HuffmanCode
         private byte[] CreateHeader(int datalenght, int[] freqs)                            // Создание заголовка
         {
             List<byte> head = new List<byte>();                                             //список заголовка//длина(выделяется 4 байта)
-            head.Add((byte)(datalenght         & 255));                                     //1 байт (младшие(последние) 8 бит)
-            head.Add((byte)((datalenght >>  8) & 255));                                     //2 байт сдвигаем на 8 бит
-            head.Add((byte)((datalenght >> 16) & 255));                                     //3 байт сдвигаем уже на 16 бит
-            head.Add((byte)((datalenght >> 24) & 255));                                     //4 байт сдвигаем на 24 бит
-            for (int j = 0; j < 256; j++)                                                   //записываем таблицу 
+            head.Add((byte)(datalenght         & BITS_PER_BYTE_WITH_ZERO));                                     //1 байт (младшие(последние) 8 бит)
+            head.Add((byte)((datalenght >>  8) & BITS_PER_BYTE_WITH_ZERO));                                     //2 байт сдвигаем на 8 бит
+            head.Add((byte)((datalenght >> 16) & BITS_PER_BYTE_WITH_ZERO));                                     //3 байт сдвигаем уже на 16 бит
+            head.Add((byte)((datalenght >> 24) & BITS_PER_BYTE_WITH_ZERO));                                     //4 байт сдвигаем на 24 бит
+            for (int j = 0; j < BITS_PER_BYTE; j++)                                                   //записываем таблицу 
             {                                                                               //записать 256 чисел каждое из которых означает очередной байт
                 head.Add((byte)(freqs[j]));
             }
@@ -109,7 +113,7 @@ namespace HuffmanCode
                 {                                                                           // разбираем код на отдельные смволы
                     if (c == '1')
                         sum |= bit;                                                         // добавляем бит через дизъюнкцию 
-                    if (bit < 128)                                                          // если бит меньше 128
+                    if (bit < BITS_PER_BYTE/2)                                                          // если бит меньше 128
                         bit <<= 1;                                                          // сдвигаем бит
                     else
                     {
@@ -126,7 +130,7 @@ namespace HuffmanCode
 
         private string[] CreateHuffmanCode(Node root)                                       // создание кода для каждого элемента 
         {                                                                                   //(реализация алгоритма поиска вглубину)
-            string[] codes = new string[256]; 
+            string[] codes = new string[BITS_PER_BYTE]; 
             Next(root, "");                                                                 // рекурсивная функция (корневой элемент, начальный символ)
             return codes;
 
@@ -145,27 +149,27 @@ namespace HuffmanCode
 
         private int[] CalculateFreq(byte[] data)                                            //создание частотного словаря (составение таблицы символов)
         {
-            int[] freqs = new int[256];                                                     // пустой словарь (256 - кол-во значений в 1 байте)
+            int[] freqs = new int[BITS_PER_BYTE];                                                     // пустой словарь (256 - кол-во значений в 1 байте)
             foreach (byte d in data)                                                        // перебор всех байтов
                 freqs[d]++;                                                                 // считаем кол-во
             NormalizeFreqs();                                                               //нормализация соворя для исключения ошибок при файле размером более 255
             return freqs;
 
 
-            void NormalizeFreqs()                                                           // тут не важно
+            void NormalizeFreqs() //??                                                          // тут не важно
             {
                 int max = freqs.Max();
-                if (max <= 255) return;
-                for (int i = 0; i < 256; i++)
+                if (max <= BITS_PER_BYTE_WITH_ZERO) return;
+                for (int i = 0; i < BITS_PER_BYTE; i++)
                     if (freqs[i] > 0)
-                        freqs[i] = 1 + freqs[i] * 255 / (max + 1);
+                        freqs[i] = 1 + freqs[i] * BITS_PER_BYTE_WITH_ZERO / (max + 1);
             }
         }
 
         private Node CreateHuffmanTree(int[] freqs)                                         // создание дерева
         {
             PriorityQueue<Node> pq = new PriorityQueue<Node>();                             // приоритетная очередь
-            for (int i = 0; i < 256; i++)                                                  // перебор элементов 
+            for (int i = 0; i < BITS_PER_BYTE; i++)                                                  // перебор элементов 
             {
                 if(freqs[i] > 0)                                                           // добавлям только те, которе больше 0
                     pq.Enqueue(freqs[i], new Node((byte)i, freqs[i]));                     // добавляем элемент и его частоту
